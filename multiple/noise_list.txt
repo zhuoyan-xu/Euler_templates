@@ -1,0 +1,4 @@
+salt_pepper
+film_grain
+jpeg_artifacts
+downsample_artifacts
