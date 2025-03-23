@@ -1,0 +1,2 @@
+low_light
+downsample_artifacts

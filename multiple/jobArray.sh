@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 #
-#SBATCH --output=./eulerlog/o_device_job_name_%j.out
-#SBATCH --error=./eulerlog/o_device_job_name_%j.err
 #SBATCH -J adalmms  # give the job a name   
 #***SBATCH --partition=batch_default ***
 # 
@@ -14,8 +12,10 @@
 #SBATCH --cpus-per-task=12     ## CPUs per task; number of threads of each task
 #SBATCH -t 256:00:00          ## Walltime
 #SBATCH --mem=60GB
-#SBATCH -p research
+#SBATCH -p lianglab,research
 #SBATCH --exclude=euler[01-16],euler[21-23],euler28
+#SBATCH --output=./eulerlog/o_device_job_name_%A_%a.out
+#SBATCH --error=./eulerlog/o_device_job_name_%A_%a.err
 source ~/.bashrc
 conda activate /srv/home/zxu444/anaconda3/envs/lnext
 
@@ -36,18 +36,20 @@ echo "SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
 echo "SLURM_ARRAY_JOB_ID: " $SLURM_ARRAY_JOB_ID
 
 # Read the specific line from the input file based on array task ID
-LINE=$(sed "${SLURM_ARRAY_TASK_ID}q;d" noise_list.txt)
-
+LINE=$(sed "${SLURM_ARRAY_TASK_ID}q;d" slurm_array_txt/low_light.txt)
 # Extract model_id and latency from the line
-noise_type=$(echo $LINE | cut -d',' -f1 | xargs)
-# latency=$(echo $LINE | cut -d',' -f2 | xargs)
+gain=$(echo $LINE | cut -d',' -f1 | xargs)
+sigma=$(echo $LINE | cut -d',' -f2 | xargs)
 
 echo "======== Running evaluation ========"
-echo "jobArray noise: $noise_type"
-# echo "Latency: $latency"
+# echo "jobArray noise: $noise_type"
+echo "jobarray gain: $gain"
+echo "jobarray sigma: $sigma"
 
 # Export the variables so they're available to the evaluation script
-export noise_type
+export noise_type="low_light"
+export gain
+export sigma
 
 # Run the evaluation script
 bash ov_noise.sh
