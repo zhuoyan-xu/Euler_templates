@@ -31,6 +31,8 @@ print(torch.cuda.get_device_name(0))
 EOF
 
 echo "======== run with different inputs ========"
+bash run.sh
+
 
 ## SBATCH -p research
 ## SBATCH --nodelist=euler01
